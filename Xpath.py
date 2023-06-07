@@ -6,7 +6,10 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 #info: [0"carrier",1"price",2"duration",3"stops",4"date"]
 def send_mail(info):
-    content="<strong>Date: </strong>"+info[4]+"/n<strong>Carrier Name: </strong>"+info[0]+"/n<strong>Price: </strong>"+info[1]+"/n<strong>Duration: </strong>"+info[2]+"/n<strong>Stops: </strong>"+info[3]
+    print("sending email")
+    content=""
+    for info_single in info:
+        content=content+"<p><strong>Date: </strong>"+info_single[4]+"</p>"+"<p><strong>Carrier Name: </strong>"+info_single[0]+"</p><p><strong>Price: </strong>"+info_single[1]+"</p><p><strong>Duration: </strong>"+info_single[2]+"</p><p><strong>Stops: </strong>"+info_single[3]+"</p>"
     message = Mail(
     from_email='zengmei888@gmail.com',
     to_emails='zengweihao99@gmail.com',
@@ -22,7 +25,7 @@ def send_mail(info):
     except Exception as e:
         print(e.message)
 
-def scrap(date_desire):
+def scrap(date_desire,max_price):
     date="2023-07-03"
     link_head="https://www.kayak.com/flights/"
     from2des="BOS,NYC-TYO/"
@@ -82,13 +85,13 @@ def scrap(date_desire):
     # test_path=test_path+'/div[@class="c_cgF c_cgF-mod-variant-default"]'
     info_to_send=[]
     for i in range(0,len(sorted_price_id)):
-        if price_number[sorted_price_id[i]]<=900:
-            temp=[carriers[sorted_price_id[i]],str(price_number[sorted_price_id[i]]),durations[sorted_price_id[i]],str(stop_number[sorted_price_id[i]]),date]
+        if price_number[sorted_price_id[i]]<=max_price:
+            temp=[carriers[sorted_price_id[i]].text,str(price_number[sorted_price_id[i]]),durations[sorted_price_id[i]].text,str(stop_number[sorted_price_id[i]]),date]
             info_to_send.append(temp)
-    for info_single in info_to_send:
-        send_mail(info_single)
+    send_mail(info_to_send)
 date_year_month="2023-06-"
 date_day=14
-while(1):
-    for i in range(0,15):
-        scrap(date_year_month+str(date_day+i))
+scrap(date_year_month+str(date_day),1500)
+# while(1):
+#     for i in range(0,15):
+#         scrap(date_year_month+str(date_day+i))
