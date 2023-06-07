@@ -9,14 +9,15 @@ from sendgrid.helpers.mail import Mail
 def send_mail(info):
     print("sending email")
     content=""
+    
     for info_single in info:
-        content=content+"<p><strong>Date: </strong>"+info_single[4]+"</p>"+"<p><strong>From and To: </strong>"+info_single[5]+"<p><strong>Carrier Name: </strong>"+info_single[0]+"</p><p><strong>Price: </strong>"+info_single[1]+"</p><p><strong>Duration: </strong>"+info_single[2]+"</p><p><strong>Stops: </strong>"+info_single[3]+"</p>"
+        content=content+"<p><strong>Date: </strong>"+info_single[4]+"</p>"+"<p><strong>From and To: </strong>"+info_single[5]+"</p><p><strong>Carrier Name: </strong>"+info_single[0]+"</p><p><strong>Price: </strong>"+info_single[1]+"</p><p><strong>Duration: </strong>"+info_single[2]+"</p><p><strong>Stops: </strong>"+info_single[3]+"</p>"
     message = Mail(
     from_email='zengmei888@gmail.com',
     to_emails='zengweihao99@gmail.com',
     subject="Ticket Info Update",
     #html_content='<strong>and easy to do anywhere, even with Python</strong>')
-    html_content=content)
+    html_content=str(content))
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
@@ -97,7 +98,12 @@ date_day=14
 #scrap(date_year_month+str(date_day),1500)
 route1="BOS,NYC-TYO"
 route2="BOS,NYC-HKG"
+#scrap(date_year_month+str(date_day),route2,1500)
 while(1):
-    for i in range(0,15):
-        scrap(date_year_month+str(date_day+i),route1,1000)
-        scrap(date_year_month+str(date_day+i),route2,1000)
+    try:
+        for i in range(0,15):
+            scrap(date_year_month+str(date_day+i),route1,1000)
+            scrap(date_year_month+str(date_day+i),route2,1000)
+    except:
+        continue
+#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
