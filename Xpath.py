@@ -5,12 +5,12 @@ from selenium.webdriver.common.by import By
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-#info: [0"carrier",1"price",2"duration",3"stops",4"date"]
+#info: [0"carrier",1"price",2"duration",3"stops",4"date",5"from_to"]
 def send_mail(info):
     print("sending email")
     content=""
     for info_single in info:
-        content=content+"<p><strong>Date: </strong>"+info_single[4]+"</p>"+"<p><strong>Carrier Name: </strong>"+info_single[0]+"</p><p><strong>Price: </strong>"+info_single[1]+"</p><p><strong>Duration: </strong>"+info_single[2]+"</p><p><strong>Stops: </strong>"+info_single[3]+"</p>"
+        content=content+"<p><strong>Date: </strong>"+info_single[4]+"</p>"+"<p><strong>From and To: </strong>"+info_single[5]+"<p><strong>Carrier Name: </strong>"+info_single[0]+"</p><p><strong>Price: </strong>"+info_single[1]+"</p><p><strong>Duration: </strong>"+info_single[2]+"</p><p><strong>Stops: </strong>"+info_single[3]+"</p>"
     message = Mail(
     from_email='zengmei888@gmail.com',
     to_emails='zengweihao99@gmail.com',
@@ -26,14 +26,15 @@ def send_mail(info):
     except Exception as e:
         print(e.message)
 
-def scrap(date_desire,max_price):
+def scrap(date_desire,from_to,max_price):
     date="2023-07-03"
     link_head="https://www.kayak.com/flights/"
-    from2des="BOS,NYC-TYO/"
+    #from2des="BOS,NYC-TYO"
+    from2des=from_to
     date=date_desire
     link_end="?sort=bestflight_a"
 
-    page_addr=link_head+from2des+date+link_end
+    page_addr=link_head+from2des+"/"+date+link_end
     driver=webdriver.Chrome()
     driver.get(page_addr)
     time.sleep(randint(2,5))
@@ -87,13 +88,16 @@ def scrap(date_desire,max_price):
     info_to_send=[]
     for i in range(0,len(sorted_price_id)):
         if price_number[sorted_price_id[i]]<=max_price:
-            temp=[carriers[sorted_price_id[i]].text,str(price_number[sorted_price_id[i]]),durations[sorted_price_id[i]].text,str(stop_number[sorted_price_id[i]]),date]
+            temp=[carriers[sorted_price_id[i]].text,str(price_number[sorted_price_id[i]]),durations[sorted_price_id[i]].text,str(stop_number[sorted_price_id[i]]),date,from_to]
             info_to_send.append(temp)
     if len(info_to_send)>0:
         send_mail(info_to_send)
 date_year_month="2023-06-"
 date_day=14
 #scrap(date_year_month+str(date_day),1500)
+route1="BOS,NYC-TYO"
+route2="BOS,NYC-HKG"
 while(1):
     for i in range(0,15):
-        scrap(date_year_month+str(date_day+i),1000)
+        scrap(date_year_month+str(date_day+i),route1,1000)
+        scrap(date_year_month+str(date_day+i),route2,1000)
