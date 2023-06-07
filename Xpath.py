@@ -36,7 +36,7 @@ def scrap(date_desire,max_price):
     page_addr=link_head+from2des+date+link_end
     driver=webdriver.Chrome()
     driver.get(page_addr)
-    time.sleep((2,5))
+    time.sleep(randint(2,5))
 
     flights_xpath='//div[@class="nrc6"]'
     flights=driver.find_elements(By.XPATH, flights_xpath)
@@ -89,7 +89,8 @@ def scrap(date_desire,max_price):
         if price_number[sorted_price_id[i]]<=max_price:
             temp=[carriers[sorted_price_id[i]].text,str(price_number[sorted_price_id[i]]),durations[sorted_price_id[i]].text,str(stop_number[sorted_price_id[i]]),date]
             info_to_send.append(temp)
-    send_mail(info_to_send)
+    if len(info_to_send)>0:
+        send_mail(info_to_send)
 date_year_month="2023-06-"
 date_day=14
 #scrap(date_year_month+str(date_day),1500)
