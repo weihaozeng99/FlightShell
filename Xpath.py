@@ -1,4 +1,5 @@
 import time
+from random import randint
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import os
@@ -35,7 +36,7 @@ def scrap(date_desire,max_price):
     page_addr=link_head+from2des+date+link_end
     driver=webdriver.Chrome()
     driver.get(page_addr)
-    time.sleep(3)
+    time.sleep((2,5))
 
     flights_xpath='//div[@class="nrc6"]'
     flights=driver.find_elements(By.XPATH, flights_xpath)
@@ -46,7 +47,7 @@ def scrap(date_desire,max_price):
         try:
             more_button_path='//div[contains(@class,"show-more-button")]'
             driver.find_element(By.XPATH,more_button_path).click()
-            time.sleep(15)
+            time.sleep(randint(10,15))
         except:
             pass   
     carrier_name_path='//div[@class="c_cgF c_cgF-mod-variant-default" and @dir="auto"]'
@@ -91,7 +92,7 @@ def scrap(date_desire,max_price):
     send_mail(info_to_send)
 date_year_month="2023-06-"
 date_day=14
-scrap(date_year_month+str(date_day),1500)
-# while(1):
-#     for i in range(0,15):
-#         scrap(date_year_month+str(date_day+i))
+#scrap(date_year_month+str(date_day),1500)
+while(1):
+    for i in range(0,15):
+        scrap(date_year_month+str(date_day+i),1000)
